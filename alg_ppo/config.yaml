@@ -1,0 +1,33 @@
+training_frames: 25_000_000     # how many total frames to train for (if running in training mode)
+eval_mode: false
+eval_eps: 10                    # how many episodes to evaluate each task for (if running in eval mode)
+device: 'cuda'
+
+seed: 0                         # seed for rng
+checkpoint: null                # model checkpoint to load, should be of the form '[run_name]@[step]' or '[run_name]@latest'
+                                # the run will be stored in a subdir of run_name
+amp: false                      # use mixed precision
+deterministic: false            # use deterministic cudnn kernels
+
+env:
+  name: 'chaser'
+  distribution_mode: 'easy'
+  frame_stack: 4
+
+model_depth_scale: 2
+
+alg:
+  n_workers: 64
+  rollout_len: 128
+  epochs: 3
+  minibatches: 4
+
+opt:
+  lr: 2.5e-4
+  adam_eps: 1e-5
+  max_grad_norm: 0.5
+  gamma: 0.99
+  gae_lambda: 0.95
+  value_cost: 0.5
+  entropy_cost: 0.01
+  clip_ratio: 0.1

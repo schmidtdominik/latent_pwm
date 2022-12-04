@@ -1,0 +1,46 @@
+
+training_frames: 100_000_000     # how many total frames to train for (if running in training mode)
+eval_eps: 200                   # how many episodes to evaluate each task for (if running in eval mode)
+seed: 0                         # seed for rng
+checkpoint: null                # model checkpoint to load, should be of the form '[run_name]@[step]' or '[run_name]@latest'
+                                # the run will be stored in a subdir of run_name
+amp: false                       # use mixed precision
+deterministic: false            # deterministic cudnn kernels
+device: cuda                    # which pytorch device
+
+env:
+  taskset: ???
+  frame_stack: 4
+  grayscale: True
+  resolution: 72
+  return_norm: true
+  reward_clipping: true
+  aux_rewards: true
+
+model:
+  scale: 1
+  arch: impala_tb
+
+alg:
+  n_workers: 64
+  rollout_len: 20
+  replay_factor: 3                # each training batch contains `n_workers*rollout_len` on-policy frames and that times `replay_factor` replayed frames
+  replay_buffer_rollouts: 120     # the number of frames in the buffer is n_workers*rollout_len*replay_buffer_size
+
+opt:
+  lr: 0.0006
+  adam_eps: 1e-8
+  max_grad_norm: 40
+  baseline_cost: 0.5
+  entropy_cost: 0.0006
+  gamma: 0.99
+
+spec:
+  popart: false                  # popart makes it worse acc to `train_merged_v1` experiment
+  popart_beta: 0.00001           # originally 0.0003
+  dr_ac: false
+  dr_ac_cost: 0.01               # originally 0.1
+  dr_ac_samples: 512
+  plr: ??? # turn this off when evaluating
+  rnd: false
+  rnd_coeff: 0.005
